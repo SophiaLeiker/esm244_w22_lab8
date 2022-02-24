@@ -1,0 +1,51 @@
+---
+title: 'Lab 8 Part 2: Time Series'
+author: "Sophia Leiker"
+date: "2/24/2022"
+output: html_document
+---
+
+```{r setup, include=TRUE}
+knitr::opts_chunk$set(echo = TRUE, message = FALSE, warning = FALSE)
+library(tidyverse)
+library(here)
+library(lubridate)
+library(tsibble)
+library(feasts)
+library(slider)
+```
+
+## 1. Always look at your data
+
+Toolik Station (LTER) meteorological data (Source: Source: Shaver, G. 2019. A multi-year DAILY file for the Toolik Field Station at Toolik Lake, AK starting 1988 to present. ver 4. Environmental Data Initiative.)
+
+Notice that the date parsed (assumed class) as *character.* That limits the nice time series features we can use, so we'll quickly convert it into a tsibble (a time series data frame) so that we can use functions in `feasts` and `fable` to explore & analyze it. 
+
+### Read in data: 
+
+```{r}
+toolik <- read_csv(here("data","toolikweather.csv"))
+```
+
+### Convert the data frame to a tsibble
+
+Go ahead and try plotting the data as imported. 
+
+```{r, eval = FALSE}
+ggplot(data = toolik, aes(x = date, y = mean_airtemp)) +
+  geom_line()
+ 
+# Booo we get a warning (only one observation per series)
+```
+
+
+Notice that it doesn't work - because R doesn't understand the date is a *date* until we tell it.
+
+Let's go ahead and convert it to a tsibble using the `as_tsibble()` function. First, we'll need to convert the date to a `date` class, *then* convert to a tsibble:
+
+```{r}
+toolik_ts <- toolik %>% 
+  mutate(date = lubridate::mdy(date)) %>% 
+  as_tsibble(key = NULL, index = date)
+```
+
