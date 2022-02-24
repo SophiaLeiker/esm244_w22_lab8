@@ -143,7 +143,9 @@ ggplot(data = lfunction_long, aes(x = r, y = k_val, group = model)) +
   geom_line(aes(color = model))
 ```
 
+We again see that at lower distances, our data overall has a higher density of nearest neighbors compared to a simulated CSR scenario. Again, evidence of clustering. 
 
+## End Lab 8 part 1
 
 
 
